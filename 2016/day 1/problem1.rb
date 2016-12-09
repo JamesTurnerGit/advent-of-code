@@ -1,12 +1,11 @@
-direction= {north: 0,west: 0,south: 0,east: 0}
-input = "L2"
+#direction= {north: 0,west: 0,south: 0,east: 0}
 
 class Compass
-  def initilize
+  def initialize
     @facing = 0
   end
   def turn var
-    var == "L" ? @facing ++ 1: @facing --1
+    var == "L" ? @facing += 1: @facing -= 1
     @facing = 0 if @facing == 4
     @facing = 3 if @facing == -1
     case @facing
@@ -18,11 +17,5 @@ class Compass
   end
 end
 
-##loop over input string
-#c = Compass.new
-#while input.length >= 0
-  #change_in_direction = input.shift
-  #new_facing = c.turn change_in_direction
-  #puts new_facing
-    ## parse direction
-#end
+c = Compass.new
+puts c.turn "L"
