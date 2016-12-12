@@ -36,7 +36,6 @@ def check string,checksum
   generate_checksum(string) == checksum
 end
 
-p generate_checksum("a-b-c-d-e-f-g-h")
 strings = parse_inputFile
 total = 0
 
