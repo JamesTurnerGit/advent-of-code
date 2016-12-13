@@ -23,8 +23,47 @@ def parse_inputFile
   output
 end
 
-def abba?
+def single_abba? string
+  return true if string[0] == string[3] && string [1] == string[2] && !(string[0]==string[1])
+  false
+end
+
+def abba? string
+  string = string.chars
+  while true
+    return false if string.length == 3
+    return true if single_abba? string[0..3]
+    string.delete_at 0
+  end
 end
 
 lines = parse_inputFile
-p lines[0]
+
+successes = 0
+
+
+bracketed = lines[61][0]
+non_bracketed = lines[61][1]
+
+
+lines.each do |bracketed,non_bracketed|
+  success = true
+  bracketed.each do |string|
+    if abba? string
+      success = false
+      break
+    end
+  end
+  if success
+    success = false
+    non_bracketed.each do |string|
+      if abba? string
+        success = true
+        break
+      end
+    end
+  end
+  successes += 1 if success == true
+end
+
+p successes
