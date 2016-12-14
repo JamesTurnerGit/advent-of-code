@@ -16,37 +16,54 @@ def parse_inputFile
   output
 end
 
-def init_screen x,y
-  output = []
-  y.times do
-    x_output = []
-    x.times do
-      x_output << false
+class Screen
+  def initialize x,y
+    @display = []
+    y.times do
+      display_row = []
+      x.times {display_row << nil}
+      @display << display_row
     end
-    output << x_output
   end
 
-  output
-end
-
-def display_output array
-  array.each do |row|
-    row.each do |pixel|
-      print pixel ? "*" : "."
+  def display
+    @display.each do |row|
+      row.each {|pixel| print pixel ? "*" : "."}
+      puts
     end
     puts
   end
+
+  def draw_rect x, y
+    @display.map!.each_with_index do |row,pos_y|
+      row.map!.each_with_index do |pixel,pos_x|
+        pixel = true  if pos_x < x && pos_y < y
+      end
+    end
+  end
+
+  def shift_array! array, magnitude
+    magnitude.times do
+      popped = array.pop
+      array.unshift(popped)
+    end
+  end
+
+  def move_y y, magnitude
+    shift_array! @display[y],magnitude
+  end
+
+  def move_x x ,magnitude
+    temporary_array = []
+    for y_pos in (0...@display.length) do
+      temporary_array << @display[y_pos][x]
+    end
+    shift_array! temporary_array, magnitude
+    for y_pos in (0...@display.length) do
+       @display[y_pos][x] = temporary_array[y_pos]
+    end
+  end
 end
 
-def draw_rect array, x, y
-end
-
-def move_y array, row , ammount
-end
-
-def move_x array, row , ammount
-end
-
-screen = init_screen(50,6)
-display_output screen
+screen = Screen.new(50,6)
 parse_inputFile
