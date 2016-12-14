@@ -8,9 +8,9 @@ def parse_inputFile
       scanner = StringScanner.new line.chomp
       scanner.scan /(rect |rotate column x=|rotate row y=)(\d+) ?[a-z]+ ?(\d+)/
       command = scanner[1]
-      a = scanner[2]
-      b = scanner[3]
-      output << [command, [a,b]]
+      a = scanner[2].to_i
+      b = scanner[3].to_i
+      output << [command, a,b]
     end
   end
   output
@@ -28,7 +28,7 @@ class Screen
 
   def display
     @display.each do |row|
-      row.each {|pixel| print pixel ? "*" : "."}
+      row.each {|pixel| print pixel ? "#" : " "}
       puts
     end
     puts
@@ -37,7 +37,11 @@ class Screen
   def draw_rect x, y
     @display.map!.each_with_index do |row,pos_y|
       row.map!.each_with_index do |pixel,pos_x|
-        pixel = true  if pos_x < x && pos_y < y
+        if pos_x < x && pos_y < y
+          1
+        else
+          pixel
+        end
       end
     end
   end
@@ -63,7 +67,22 @@ class Screen
        @display[y_pos][x] = temporary_array[y_pos]
     end
   end
+  def count_pixels
+    @display.flatten.compact.reduce(0,:+)
+  end
 end
 
 screen = Screen.new(50,6)
-parse_inputFile
+commands = parse_inputFile
+
+commands.each do |command,a,b|
+  case command
+  when "rotate column x=" then screen.move_x a,b
+  when "rotate row y=" then screen.move_y a,b
+  when "rect " then screen.draw_rect a,b
+  end
+  system "clear" or system "cls"
+  screen.display
+end
+
+puts screen.count_pixels
